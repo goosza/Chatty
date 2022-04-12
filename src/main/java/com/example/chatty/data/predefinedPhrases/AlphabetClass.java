@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 public class AlphabetClass {
     private final List<Pattern> greetingPatterns = new ArrayList<>();
     private final List<Pattern> jokeRequestPatterns = new ArrayList<>();
-    private final List<Pattern> convRequestPatterns = new ArrayList<>();
+    private final Pattern convRequestPattern;
 
     private final String[] chattyJokes = {"Why was the math teacher late to work? She took the rhombus.",
                                     "What did Yoda say when he saw himself in 4K? \"HDMI.\"",
@@ -22,12 +22,11 @@ public class AlphabetClass {
 
 
     public AlphabetClass() {
-        greetingPatterns.add(Pattern.compile(".Hello.", Pattern.CASE_INSENSITIVE));
-        greetingPatterns.add(Pattern.compile(".Hi.", Pattern.CASE_INSENSITIVE));
-        greetingPatterns.add(Pattern.compile(".Sup.", Pattern.CASE_INSENSITIVE));
-        jokeRequestPatterns.add(Pattern.compile(".Joke.", Pattern.CASE_INSENSITIVE));
-        convRequestPatterns.add(Pattern.compile(".how\smuch.(?<num>\\d+)\s(?<cur1>[A-Za-z]).(?<cur2>[A-Z][a-z]).", Pattern.CASE_INSENSITIVE));
-        convRequestPatterns.add(Pattern.compile(".convert.(?<num>\\d+)\s(?<cur1>[A-Za-z]).(?<cur2>[A-Z][a-z]).", Pattern.CASE_INSENSITIVE));
+        greetingPatterns.add(Pattern.compile(".*hello.*", Pattern.CASE_INSENSITIVE));
+        greetingPatterns.add(Pattern.compile(".*hi.*", Pattern.CASE_INSENSITIVE));
+        greetingPatterns.add(Pattern.compile(".*sup.*", Pattern.CASE_INSENSITIVE));
+        jokeRequestPatterns.add(Pattern.compile(".*joke.*", Pattern.CASE_INSENSITIVE));
+        this.convRequestPattern = Pattern.compile("(?<amount>\\d).*(?<from>.*).*(?<to>.*).*", Pattern.CASE_INSENSITIVE);
     }
 
     public List<Pattern> getGreetingPatterns() {
@@ -38,8 +37,8 @@ public class AlphabetClass {
         return jokeRequestPatterns;
     }
 
-    public List<Pattern> getConvRequestPatterns() {
-        return convRequestPatterns;
+    public Pattern getConvRequestPattern() {
+        return convRequestPattern;
     }
 
     public String[] getChattyJokes() {

@@ -8,7 +8,6 @@ import java.io.IOException;
 
 
 public class ChattyPOJO {
-
     RequestHandler requestHandler;
 
     public ChattyPOJO() {

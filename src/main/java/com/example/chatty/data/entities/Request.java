@@ -15,7 +15,7 @@ import static com.example.chatty.data.enums.RequestType.*;
 public class Request {
 
     private final String request;
-    private RequestType type = null;
+    private RequestType type = NOTUNDERSTOOD;
 
     /**
      * Constructor to determine which Request is recieved via {@link AlphabetClass} with patterns.
@@ -27,7 +27,7 @@ public class Request {
 
         List<Pattern> greetingPatterns = alphabet.getGreetingPatterns();
         List<Pattern> jokePatterns = alphabet.getJokeRequestPatterns();
-        List<Pattern> conversionPatterns = alphabet.getConvRequestPatterns();
+        Pattern conversionPattern = alphabet.getConvRequestPattern();
 
         for (Pattern pattern: greetingPatterns){
             Matcher matcher = pattern.matcher(request);
@@ -39,11 +39,9 @@ public class Request {
             if (matcher.matches())
                 this.type = JOKE;
         }
-        for (Pattern pattern: conversionPatterns){
-            Matcher matcher = pattern.matcher(request);
-            if (matcher.matches())
-                this.type = CONVERSION;
-        }
+        Matcher matcher = conversionPattern.matcher(request);
+        if (matcher.matches())
+            this.type = CONVERSION;
 
     }
 

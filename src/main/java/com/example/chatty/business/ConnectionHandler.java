@@ -2,6 +2,8 @@ package com.example.chatty.business;
 
 import org.apache.catalina.connector.InputBuffer;
 import org.json.JSONObject;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,11 +15,20 @@ import java.net.URL;
 /**
  * Class handling the connection to Frankfurt opensource API and getting JSONObject of actual rates.
  */
+
 public class ConnectionHandler {
-    private final URL url;
+    private URL url;
 
     public ConnectionHandler(String url) throws MalformedURLException {
         this.url = new URL(url);
+    }
+
+    public URL getUrl() {
+        return url;
+    }
+
+    public void setUrl(URL url) {
+        this.url = url;
     }
 
     public HttpURLConnection connect() throws IOException {

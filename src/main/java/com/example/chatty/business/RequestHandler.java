@@ -7,6 +7,8 @@ import com.example.chatty.data.entities.answerTypes.Joke;
 import com.example.chatty.data.entities.answerTypes.NotUnderstood;
 import com.example.chatty.data.predefinedPhrases.AlphabetClass;
 import org.json.JSONObject;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -19,12 +21,12 @@ import java.util.regex.Pattern;
 import static com.example.chatty.data.enums.RequestType.*;
 
 /**
- * Class handling the message determinizing and creating answer to send.
+ * Class handling the message determining and creating answer to send.
  */
 public class RequestHandler {
 
-    private final List<Joke> predefinedJokes = new ArrayList<>();
-    private final List<Greeting> predefinedGreetings = new ArrayList<>();
+    private List<Joke> predefinedJokes = new ArrayList<>();
+    private List<Greeting> predefinedGreetings = new ArrayList<>();
 
     public RequestHandler(){
         AlphabetClass alphabet = new AlphabetClass();
@@ -32,6 +34,22 @@ public class RequestHandler {
             predefinedJokes.add(new Joke(s));
         for (String s: alphabet.getChattyGreetings())
             predefinedGreetings.add(new Greeting(s));
+    }
+
+    public void setPredefinedJokes(List<Joke> predefinedJokes){
+        this.predefinedJokes = predefinedJokes;
+    }
+
+    public void setPredefinedGreetings(List<Greeting> predefinedGreetings) {
+        this.predefinedGreetings = predefinedGreetings;
+    }
+
+    public List<Joke> getPredefinedJokes() {
+        return predefinedJokes;
+    }
+
+    public List<Greeting> getPredefinedGreetings() {
+        return predefinedGreetings;
     }
 
     /**
@@ -137,28 +155,23 @@ public class RequestHandler {
         AlphabetClass alphabet = new AlphabetClass();
         String number = null, currency1 = null, currency2 = null;
         double convertedAmount;
-        for (Pattern pattern: alphabet.getConvRequestPatterns()){
-            Matcher matcher = pattern.matcher(request.getRequest());
-            if (matcher.matches()){
-                while (matcher.find()){
-                    number = matcher.group("num");
-                    currency1 = matcher.group("cur1");
-                    currency2 = matcher.group("cur2");
-                }
-                JSONObject rates = getRates();
-                if (currency1 == null || currency2 == null || !checkCurrencies(currency1, currency2, rates))
-                    return new NotUnderstood("I'm sorry, I don't understand your question." +
-                            " It looks I don't know the currency you're asking for.");
-                convertedAmount = countConversion(number, currency1, currency2, rates);
-                return new Conversion("It's " + convertedAmount + currency2 + ".");
-            }
+        Pattern pattern = alphabet.getConvRequestPattern();
+        Matcher matcher = pattern.matcher(request.getRequest());
+        while (matcher.find()){
+            number = matcher.group("amount");
+            currency1 = matcher.group("from");
+            currency2 = matcher.group("to");
         }
-        return new NotUnderstood("I'm sorry, I don't understand your question.");
-
+        JSONObject rates = getRates();
+        if (currency1 == null || currency2 == null || !checkCurrencies(currency1, currency2, rates))
+            return new NotUnderstood("I'm sorry, I don't understand your question." +
+                    " It looks I don't know the currency you're asking for.");
+        convertedAmount = countConversion(number, currency1, currency2, rates);
+        return new Conversion("It's " + convertedAmount + currency2 + ".");
     }
 
     /**
-     * Method to call parsingRequestAndCreatingAnswer method.
+     * Method to call parsingRequestAndCreatingAnswer method. Case of conversion request.
      * @param request
      * @return {@link Answer} entity
      * @throws IOException
@@ -183,9 +196,7 @@ public class RequestHandler {
         else if (isConversionRequest(request)){
             return conversionAnswer(request);
         }
-        else
-            return new NotUnderstood("I'm sorry, I don't understand your question.");
-
+        return new NotUnderstood("I'm sorry, I don't understand your request.");
     }
 
     /**
@@ -194,6 +205,7 @@ public class RequestHandler {
      * @return {@link Answer} final answer.
      * @throws IOException
      */
+
     public Answer getAnswer(Request request) throws IOException {
         return requestHandling(request);
     }
