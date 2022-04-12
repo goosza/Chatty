@@ -2,12 +2,13 @@ package com.example.chatty.business;
 
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 /**
  * Class handling the connection to Frankfurt opensource API and getting JSONObject of actual rates.
@@ -28,22 +29,32 @@ public class ConnectionHandler {
         this.url = url;
     }
 
-    public HttpURLConnection connect() throws IOException {
+    public void connect() throws IOException {
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestMethod("GET");
         connection.setRequestProperty("accept", "application/json");
-        return connection;
+        connection.connect();
     }
 
-    public JSONObject getJSON(HttpURLConnection connection) throws IOException {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String inputLine;
-        StringBuffer response = new StringBuffer();
-        while ((inputLine = reader.readLine()) != null ){
-            response.append(inputLine);
+    private static String readAll(Reader rd) throws IOException {
+        StringBuilder stringBuilder = new StringBuilder();
+        int cp;
+        while ((cp = rd.read()) != -1) {
+            stringBuilder.append((char) cp);
         }
-        reader.close();
-        JSONObject jsonObject = new JSONObject(response.toString());
-        return new JSONObject(jsonObject.getJSONObject("rates"));
+        return stringBuilder.toString();
+    }
+
+    public JSONObject getJSON() throws IOException {
+        InputStream inputStream = url.openStream();
+        try {
+            BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8));
+            String jsonText = readAll(rd);
+            JSONObject json = new JSONObject(jsonText);
+            return json.getJSONObject("rates");
+        } finally {
+            inputStream.close();
+        }
     }
 
 }

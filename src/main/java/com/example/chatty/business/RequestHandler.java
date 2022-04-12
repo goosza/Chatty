@@ -125,8 +125,8 @@ public class RequestHandler {
      */
     public JSONObject getRates() throws IOException {
         ConnectionHandler getRates = new ConnectionHandler("https://api.frankfurter.app/latest");
-        HttpURLConnection connection = getRates.connect();
-        return getRates.getJSON(connection);
+        getRates.connect();
+        return getRates.getJSON();
     }
 
     /**
@@ -143,11 +143,11 @@ public class RequestHandler {
         if (currency1.equals("EUR") && currency2.equals("EUR")){
             return amount;
         } else if (!currency1.equals("EUR") && currency2.equals("EUR")){
-            return amount/rates.getDouble("currency1");
+            return amount/rates.getDouble(currency1);
         } else if (currency1.equals("EUR")){
-            return amount * rates.getDouble("currency2");
+            return amount * rates.getDouble(currency2);
         } else {
-            return (amount/rates.getDouble("currency1"))*rates.getDouble("currency2");
+            return (amount/rates.getDouble(currency1))*rates.getDouble(currency2);
         }
     }
 
@@ -180,7 +180,7 @@ public class RequestHandler {
             return new NotUnderstood("I'm sorry, I don't understand your question." +
                     " It looks I don't know the currency you're asking for.");
         convertedAmount = countConversion(number, currency1, currency2, rates);
-        return new Conversion("It's " + convertedAmount + currency2 + ".");
+        return new Conversion("It's " + convertedAmount + " " + currency2 + ".");
     }
 
     /**
