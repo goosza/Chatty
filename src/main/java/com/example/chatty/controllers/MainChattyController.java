@@ -4,9 +4,7 @@ import com.example.chatty.data.ChattyPOJO;
 import com.example.chatty.data.entities.Answer;
 import com.example.chatty.data.predefinedPhrases.AlphabetClass;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,7 +34,7 @@ public class MainChattyController {
     };
 
     @PostMapping("/conversation")
-    public Map<String, String> getResponse(String request) throws Exception {
+    public Map<String, String> getResponse(@RequestBody String request) throws Exception {
         Map<String, String> message = new HashMap<>();
         message.put("message", chatty.answerTheRequest(request).getAnswer());
         return message;

@@ -32,17 +32,17 @@ public class Request {
         for (Pattern pattern: greetingPatterns){
             Matcher matcher = pattern.matcher(request);
             if (matcher.matches())
-                type = GREETING;
+                this.type = GREETING;
         }
         for (Pattern pattern: jokePatterns){
             Matcher matcher = pattern.matcher(request);
             if (matcher.matches())
-                type = JOKE;
+                this.type = JOKE;
         }
         for (Pattern pattern: conversionPatterns){
             Matcher matcher = pattern.matcher(request);
             if (matcher.matches())
-                type = CONVERSION;
+                this.type = CONVERSION;
         }
 
     }

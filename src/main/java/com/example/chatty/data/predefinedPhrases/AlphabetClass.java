@@ -22,12 +22,12 @@ public class AlphabetClass {
 
 
     public AlphabetClass() {
-        greetingPatterns.add(Pattern.compile(".[Hh][Ee][Ll][Ll][Oo]."));
-        greetingPatterns.add(Pattern.compile(".[Hh][Ii]."));
-        greetingPatterns.add(Pattern.compile(".[Ss][Uu][Pp]."));
-        jokeRequestPatterns.add(Pattern.compile(".[Jj][Oo][Kk][Ee]."));
-        convRequestPatterns.add(Pattern.compile(".[Hh][Oo][Ww]\s[Mm][Uu][Cc][Hh].(?<num>\\d+)\s(?<cur1>[A-Za-z]).(?<cur2>[A-Z][a-z])."));
-        convRequestPatterns.add(Pattern.compile(".[Cc][Oo][Nn][Vv][Ee][Rr][Tt].(?<num>\\d+)\s(?<cur1>[A-Za-z]).(?<cur2>[A-Z][a-z])."));
+        greetingPatterns.add(Pattern.compile(".Hello.", Pattern.CASE_INSENSITIVE));
+        greetingPatterns.add(Pattern.compile(".Hi.", Pattern.CASE_INSENSITIVE));
+        greetingPatterns.add(Pattern.compile(".Sup.", Pattern.CASE_INSENSITIVE));
+        jokeRequestPatterns.add(Pattern.compile(".Joke.", Pattern.CASE_INSENSITIVE));
+        convRequestPatterns.add(Pattern.compile(".how\smuch.(?<num>\\d+)\s(?<cur1>[A-Za-z]).(?<cur2>[A-Z][a-z]).", Pattern.CASE_INSENSITIVE));
+        convRequestPatterns.add(Pattern.compile(".convert.(?<num>\\d+)\s(?<cur1>[A-Za-z]).(?<cur2>[A-Z][a-z]).", Pattern.CASE_INSENSITIVE));
     }
 
     public List<Pattern> getGreetingPatterns() {
