@@ -7,8 +7,6 @@ import com.example.chatty.data.entities.answerTypes.Joke;
 import com.example.chatty.data.entities.answerTypes.NotUnderstood;
 import com.example.chatty.data.predefinedPhrases.AlphabetClass;
 import org.json.JSONObject;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -101,15 +99,23 @@ public class RequestHandler {
      * @param rates JSONObject representing all rates values from opensource.
      */
     public boolean checkCurrencies(String cur1, String cur2, JSONObject rates){
-        Object currency1 = rates.get("cur1");
-        Object currency2 = rates.get("cur2");
-        if (currency1 == null){
-            return cur1.equals("EUR");
+        if (rates.has(cur1)){
+           if (rates.has(cur2)){
+               return true;
+           } else {
+               return cur2.equals("EUR");
+           }
+        } else {
+            if (cur1.equals("EUR")){
+                if (rates.has(cur2)){
+                    return true;
+                } else {
+                    return cur2.equals("EUR");
+                }
+            } else {
+                return false;
+            }
         }
-        if (currency2 == null){
-            return cur2.equals("EUR");
-        }
-        return true;
     }
 
     /**
@@ -163,7 +169,14 @@ public class RequestHandler {
             currency2 = matcher.group("to");
         }
         JSONObject rates = getRates();
-        if (currency1 == null || currency2 == null || !checkCurrencies(currency1, currency2, rates))
+        if (number == null)
+            return new NotUnderstood("I'm sorry, I don't understand your question. " +
+                    "It looks there is no needed amount");
+        if (currency1 == null || currency2 == null)
+            return new NotUnderstood("I'm sorry, I don't understand your question.");
+        currency1 = currency1.replaceAll("\\s","").toUpperCase();
+        currency2 = currency2.replaceAll("\\s","").toUpperCase();
+        if (!checkCurrencies(currency1, currency2, rates))
             return new NotUnderstood("I'm sorry, I don't understand your question." +
                     " It looks I don't know the currency you're asking for.");
         convertedAmount = countConversion(number, currency1, currency2, rates);

@@ -26,7 +26,8 @@ public class AlphabetClass {
         greetingPatterns.add(Pattern.compile(".*hi.*", Pattern.CASE_INSENSITIVE));
         greetingPatterns.add(Pattern.compile(".*sup.*", Pattern.CASE_INSENSITIVE));
         jokeRequestPatterns.add(Pattern.compile(".*joke.*", Pattern.CASE_INSENSITIVE));
-        this.convRequestPattern = Pattern.compile("(?<amount>\\d).*(?<from>.*).*(?<to>.*).*", Pattern.CASE_INSENSITIVE);
+        this.convRequestPattern = Pattern.compile("(.*[^\\d+])*(?<amount>\\d++)\\s++(?<from>[A-Za-z]++)\\s++(.*)\\s++(?<to>[A-Za-z]++).*",
+                Pattern.CASE_INSENSITIVE);
     }
 
     public List<Pattern> getGreetingPatterns() {

@@ -15,7 +15,7 @@ import static com.example.chatty.data.enums.RequestType.*;
 public class Request {
 
     private final String request;
-    private RequestType type = NOTUNDERSTOOD;
+    private RequestType type;
 
     /**
      * Constructor to determine which Request is recieved via {@link AlphabetClass} with patterns.
@@ -23,6 +23,7 @@ public class Request {
      */
     public Request(String request) {
         this.request = request;
+        this.type = NOTUNDERSTOOD;
         AlphabetClass alphabet = new AlphabetClass();
 
         List<Pattern> greetingPatterns = alphabet.getGreetingPatterns();
